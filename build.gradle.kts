@@ -12,8 +12,6 @@ repositories { mavenCentral() }
 
 group = "io.github.iyanging"
 
-version = "0.1.0"
-
 dependencies {
     compileOnly("com.google.errorprone:error_prone_check_api:2.35.1")
     compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
@@ -98,8 +96,8 @@ publishing {
             name = "MavenCentral"
             url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
             }
         }
     }
@@ -107,5 +105,5 @@ publishing {
 
 signing {
     useGpgCmd()
-    sign(publishing.publications["errorProneAsis"])
+    sign(publishing.publications)
 }
