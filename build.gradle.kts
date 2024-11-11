@@ -1,10 +1,12 @@
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     `java-library`
-    `maven-publish`
-    signing
+    id("com.vanniktech.maven.publish") version "0.30.0"
     id("com.diffplug.spotless") version "7.0.0.BETA3"
 }
 
@@ -83,27 +85,29 @@ spotless {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("errorProneAsis") {
-            from(components["java"])
-            artifactId = "error_prone_asis"
-        }
-    }
+mavenPublishing {
+    configure(JavaLibrary(javadocJar = JavadocJar.Empty(), sourcesJar = true))
 
-    repositories {
-        maven {
-            name = "MavenCentral"
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = System.getenv("OSSRH_USERNAME")
-                password = System.getenv("OSSRH_PASSWORD")
+    pom {
+        url = "https://github.com/iyanging/error-prone-asis"
+        description = "Error Prone extended checks keep code as-is to reflect your intentions"
+        licenses {
+            license {
+                name = "Mulan Permissive Software License v2"
+                url = "https://license.coscl.org.cn/MulanPSL2"
             }
         }
+        developers {
+            developer {
+                id = "iyanging"
+                name = "iyanging"
+                url = "https://github.com/iyanging/"
+            }
+        }
+        scm { url = "https://github.com/iyanging/error-prone-asis" }
     }
-}
 
-signing {
-    useGpgCmd()
-    sign(publishing.publications)
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+
+    signAllPublications()
 }
