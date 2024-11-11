@@ -1,7 +1,7 @@
 name: Publish package to the Maven Central Repository
 on:
   release:
-    types: [ created ]
+    types: [ released ]
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -31,4 +31,4 @@ jobs:
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        run: ./gradlew publish
+        run: ./gradlew publish -Pversion=${{ github.event.release.tag_name }}
