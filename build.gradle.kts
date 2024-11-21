@@ -15,6 +15,8 @@ repositories { mavenCentral() }
 group = "io.github.iyanging"
 
 dependencies {
+    api("org.jspecify:jspecify:1.0.0")
+
     compileOnly("com.google.errorprone:error_prone_check_api:2.35.1")
     compileOnly("com.google.auto.service:auto-service-annotations:1.1.1")
 

@@ -21,12 +21,12 @@ import com.sun.source.tree.ClassTree;
 )
 public class JpaImplicitEnum extends BugChecker implements BugChecker.ClassTreeMatcher {
     @Override
-    public Description matchClass(ClassTree classTree, VisitorState visitorState) {
-        if (! ASTHelpers.hasAnnotation(classTree, "jakarta.persistence.Entity", visitorState)) {
+    public Description matchClass(ClassTree tree, VisitorState state) {
+        if (! JpaUtil.isEntity(tree, state)) {
             return Description.NO_MATCH;
         }
 
-        for (final var fieldTree : JpaUtil.getColumns(classTree, visitorState)) {
+        for (final var fieldTree : JpaUtil.getColumns(tree, state)) {
             final var fieldType = ASTHelpers.getType(fieldTree);
 
             // only check for enum type
@@ -35,10 +35,13 @@ public class JpaImplicitEnum extends BugChecker implements BugChecker.ClassTreeM
             }
 
             if (
-                ! ASTHelpers
-                    .hasAnnotation(fieldTree, "jakarta.persistence.Enumerated", visitorState)
+                ! ASTHelpers.hasAnnotation(
+                    fieldTree,
+                    "jakarta.persistence.Enumerated",
+                    state
+                )
             ) {
-                visitorState.reportMatch(
+                state.reportMatch(
                     buildDescription(fieldTree)
                         .setMessage("A persistable enum field should be annotated with @Enumerated")
                         .build()
