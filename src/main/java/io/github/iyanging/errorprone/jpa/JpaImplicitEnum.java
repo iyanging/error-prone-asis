@@ -26,23 +26,23 @@ public class JpaImplicitEnum extends BugChecker implements BugChecker.ClassTreeM
             return Description.NO_MATCH;
         }
 
-        for (final var fieldTree : JpaUtil.getColumns(tree, state)) {
-            final var fieldType = ASTHelpers.getType(fieldTree);
+        for (final var column : JpaUtil.getColumns(tree, state)) {
+            final var columnType = ASTHelpers.getType(column);
 
             // only check for enum type
-            if (fieldType == null || fieldType.asElement().getKind() != ElementKind.ENUM) {
+            if (columnType == null || columnType.asElement().getKind() != ElementKind.ENUM) {
                 continue;
             }
 
             if (
                 ! ASTHelpers.hasAnnotation(
-                    fieldTree,
+                    column,
                     "jakarta.persistence.Enumerated",
                     state
                 )
             ) {
                 state.reportMatch(
-                    buildDescription(fieldTree)
+                    buildDescription(column)
                         .setMessage("A persistable enum field should be annotated with @Enumerated")
                         .build()
                 );

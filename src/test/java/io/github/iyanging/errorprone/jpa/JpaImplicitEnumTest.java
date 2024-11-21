@@ -23,8 +23,7 @@ public class JpaImplicitEnumTest {
         compilationHelper.addSourceLines(
             "A.java",
             """
-                import jakarta.persistence.Entity;
-                import jakarta.persistence.Id;
+                import jakarta.persistence.*;
 
                 @Entity
                 class NotEntity {
@@ -40,8 +39,7 @@ public class JpaImplicitEnumTest {
         compilationHelper.addSourceLines(
             "A.java",
             """
-                import jakarta.persistence.Entity;
-                import jakarta.persistence.Id;
+                import jakarta.persistence.*;
 
                 enum Color {
                     RED, YELLOW, BLUE
@@ -52,7 +50,7 @@ public class JpaImplicitEnumTest {
                     @Id
                     String id;
 
-                    // BUG: Diagnostic contains: JpaImplicitEnum
+                    // BUG: Diagnostic contains: should be annotated with @Enumerated
                     Color color;
                 }
                 """
