@@ -8,15 +8,13 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.util.SimpleAnnotationValueVisitor8;
 
-import org.jspecify.annotations.Nullable;
-
 
 public class MoreMoreAnnotations {
     private static class AnnotationValueBooleanVisitor
         extends
             SimpleAnnotationValueVisitor8<Boolean, Void> {
         @Override
-        public @Nullable Boolean visitBoolean(boolean b, Void unused) {
+        public Boolean visitBoolean(boolean b, Void unused) {
             return b;
         }
     }

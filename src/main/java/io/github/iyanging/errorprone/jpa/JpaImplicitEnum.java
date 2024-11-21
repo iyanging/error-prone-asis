@@ -13,7 +13,6 @@ import com.sun.source.tree.ClassTree;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-    name = "JpaImplicitEnum",
     summary = "A persistable enum field should be annotated with @Enumerated",
     severity = BugPattern.SeverityLevel.WARNING,
     linkType = BugPattern.LinkType.NONE,

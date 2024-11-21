@@ -89,7 +89,9 @@ public final class JpaUtil {
         VariableTree field,
         VisitorState state
     ) {
-        final var annoColumn = ASTHelpers.getAnnotations(field)
+        @SuppressWarnings(
+            "unchecked"
+        ) final var annoColumn = ((List<AnnotationTree>) ASTHelpers.getAnnotations(field))
             .stream()
             .filter(anno -> ANNO_IS_COLUMN.matches(anno, state))
             .findFirst()
