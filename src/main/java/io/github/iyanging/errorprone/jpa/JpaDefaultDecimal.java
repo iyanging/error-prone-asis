@@ -17,7 +17,6 @@ import com.sun.source.tree.ClassTree;
 
 @AutoService(BugChecker.class)
 @BugPattern(
-    name = "JpaDefaultDecimal",
     summary = "A decimal column should specify precision and scale",
     severity = BugPattern.SeverityLevel.WARNING,
     linkType = BugPattern.LinkType.NONE,
@@ -88,7 +87,8 @@ public class JpaDefaultDecimal extends BugChecker implements BugChecker.ClassTre
                     );
                 }
 
-                if (annoColumn.scale() != null && annoColumn.scale() != 0) {
+                final var scale = annoColumn.scale();
+                if (scale != null && scale != 0) {
                     state.reportMatch(
                         buildDescription(column)
                             .setMessage(

@@ -1,0 +1,18 @@
+[versions]
+errorProne = "2.36.0"
+autoService = "1.1.1"
+jspecify = "1.0.0"
+
+jpaApi = "3.2.0"
+checkerFramework = "3.48.2"
+
+errorPronePlugin = "4.1.0"
+checkerFrameworkPlugin = "0.6.46"
+spotlessPlugin = "7.0.0.BETA4"
+mavenPublishPlugin = "0.30.0"
+
+[plugins]
+errorProne = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }
+checkerFramework = { id = "org.checkerframework", version.ref = "checkerFrameworkPlugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublishPlugin" }
