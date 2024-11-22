@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.checkerFramework)
     alias(libs.plugins.spotless)
     alias(libs.plugins.mavenPublish)
+    jacoco
 }
 
 repositories { mavenCentral() }
@@ -155,3 +156,14 @@ mavenPublishing {
 
     signAllPublications()
 }
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required = true
+        csv.required = false
+    }
+}
+
+tasks.check { dependsOn(tasks.jacocoTestReport) }

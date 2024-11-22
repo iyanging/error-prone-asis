@@ -1,0 +1,31 @@
+name: Dependency Submission
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Check
+        run: ./gradlew check
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        env:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
