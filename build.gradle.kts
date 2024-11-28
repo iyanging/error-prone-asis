@@ -20,23 +20,19 @@ repositories { mavenCentral() }
 group = "io.github.iyanging"
 
 dependencies {
-    api("org.jspecify:jspecify:${libs.versions.jspecify.get()}")
+    api(libs.jspecify)
 
-    compileOnly("com.google.errorprone:error_prone_check_api:${libs.versions.errorProne.get()}")
-    compileOnly(
-        "com.google.auto.service:auto-service-annotations:${libs.versions.autoService.get()}"
-    )
+    compileOnly(libs.errorProneCheckApi)
+    compileOnly(libs.autoServiceAnnotations)
 
-    annotationProcessor("com.google.auto.service:auto-service:${libs.versions.autoService.get()}")
+    annotationProcessor(libs.autoService)
 
-    checkerFramework("org.checkerframework:checker:${libs.versions.checkerFramework.get()}")
-    errorprone("com.google.errorprone:error_prone_core:${libs.versions.errorProne.get()}")
+    checkerFramework(libs.checkerFramework)
+    errorprone(libs.errorProneCore)
 
-    testImplementation(
-        "com.google.errorprone:error_prone_test_helpers:${libs.versions.errorProne.get()}"
-    )
+    testImplementation(libs.errorProneTestHelpers)
 
-    testRuntimeOnly("jakarta.persistence:jakarta.persistence-api:${libs.versions.jpaApi.get()}")
+    testRuntimeOnly(libs.jakartaPersistenceApi)
 }
 
 java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
