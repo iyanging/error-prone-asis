@@ -1,0 +1,41 @@
+name: Deploy gh-pages
+on:
+  push:
+    branches:
+      - "**"
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/${{ github.default_branch }}'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+          enable-cache: true
+
+      - name: Prepare for site generator
+        run: uv sync
+
+      - name: Generate docs
+        run: ./gradlew generateDocs
+
+      - name: Build & deploy site
+        run: uv run mkdocs gh-deploy --force

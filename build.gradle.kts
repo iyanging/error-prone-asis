@@ -114,12 +114,14 @@ spotless {
     }
     yaml {
         target("**/*.yaml", "**/*.yml")
+        targetExclude(".venv/")
         indentWithSpaces(2)
         trimTrailingWhitespace()
         endWithNewline()
     }
     json {
         target("**/*.json")
+        targetExclude(".venv/")
         gson().indentWithSpaces(2)
         trimTrailingWhitespace()
         endWithNewline()

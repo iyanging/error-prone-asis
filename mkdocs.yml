@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: error-prone-asis // Keep code as-is
+site_url: https://iyanging.github.io/error-prone-asis
+repo_name: iyanging/error-prone-asis
+repo_url: https://github.com/iyanging/error-prone-asis
+copyright: |
+  &copy <a href="https://github.com/iyanging" target="_blank" rel="noopener">iyanging</a> &bull; <a href="https://github.com/iyanging/error-prone-asis/blob/master/LICENSE.txt"> project license </a>
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.prune
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - header.autohide
+    - content.tabs.link
+    - content.code.annotate
+    - content.code.copy
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
