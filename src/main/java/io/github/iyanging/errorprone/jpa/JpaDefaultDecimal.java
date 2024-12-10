@@ -14,6 +14,8 @@ import com.google.errorprone.matchers.Description;
 import com.google.errorprone.util.ASTHelpers;
 import com.sun.source.tree.ClassTree;
 
+import io.github.iyanging.errorprone.util.JpaUtil;
+
 
 @AutoService(BugChecker.class)
 @BugPattern(
