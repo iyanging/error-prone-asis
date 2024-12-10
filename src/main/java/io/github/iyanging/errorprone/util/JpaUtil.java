@@ -1,4 +1,4 @@
-package io.github.iyanging.errorprone.jpa;
+package io.github.iyanging.errorprone.util;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +14,6 @@ import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.VariableTree;
 import org.jspecify.annotations.Nullable;
-
-import io.github.iyanging.errorprone.MoreMoreAnnotations;
 
 
 public final class JpaUtil {

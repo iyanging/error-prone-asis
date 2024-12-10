@@ -1,4 +1,4 @@
-package io.github.iyanging.errorprone;
+package io.github.iyanging.errorprone.util;
 
 import java.util.Map;
 import java.util.Optional;
