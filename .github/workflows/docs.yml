@@ -2,14 +2,13 @@ name: Deploy gh-pages
 on:
   push:
     branches:
-      - "**"
+      - master
 
 permissions:
   contents: write
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/${{ github.default_branch }}'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
