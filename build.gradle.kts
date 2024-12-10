@@ -1,105 +1,92 @@
-import com.vanniktech.maven.publish.JavaLibrary
-import com.vanniktech.maven.publish.JavadocJar
-import com.vanniktech.maven.publish.SonatypeHost
 import net.ltgt.gradle.errorprone.CheckSeverity
 import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    `java-library`
+    java
     alias(libs.plugins.errorProne)
     alias(libs.plugins.checkerFramework)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.mavenPublish)
-    jacoco
+    `jacoco-report-aggregation`
 }
 
 repositories { mavenCentral() }
 
-group = "io.github.iyanging"
-
 dependencies {
-    api(libs.jspecify)
-
-    compileOnly(libs.errorProneCheckApi)
-    compileOnly(libs.autoServiceAnnotations)
-
-    annotationProcessor(libs.autoService)
-
-    checkerFramework(libs.checkerFramework)
     errorprone(libs.errorProneCore)
+    checkerFramework(libs.checkerFramework)
 
-    testImplementation(libs.errorProneTestHelpers)
-
-    testRuntimeOnly(libs.jakartaPersistenceApi)
-}
-
-java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
-
-val javacExports =
-    listOf(
-        "--add-exports=java.base/jdk.internal.javac=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
-    )
-
-tasks.withType<JavaCompile>().all {
-    options.compilerArgs.addAll(javacExports)
-
-    options.errorprone {
-        disableWarningsInGeneratedCode = true
-        errorproneArgs =
-            listOf(
-                "-XepAllSuggestionsAsWarnings",
-            )
-        checks =
-            mapOf(
-                "ReferenceEquality" to CheckSeverity.ERROR,
-                "UnnecessaryParentheses" to CheckSeverity.OFF,
-                "MisformattedTestData" to CheckSeverity.OFF,
-            )
+    subprojects.forEach { sp ->
+        if (sp.plugins.hasPlugin(JacocoPlugin::class)) {
+            jacocoAggregation(sp)
+        }
     }
 }
 
-tasks.withType<Test>().all {
-    jvmArgs(javacExports)
+subprojects {
+    apply(plugin = rootProject.libs.plugins.errorProne.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.checkerFramework.get().pluginId)
 
-    testLogging {
-        events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+    group = "io.github.iyanging"
 
-        exceptionFormat = TestExceptionFormat.FULL
+    repositories { mavenCentral() }
+
+    plugins.withType<JavaPlugin> {
+        java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+
+        dependencies {
+            errorprone(libs.errorProneCore)
+            checkerFramework(libs.checkerFramework)
+        }
+
+        tasks.withType<JavaCompile>().all {
+            options.errorprone {
+                disableWarningsInGeneratedCode = true
+                errorproneArgs =
+                    listOf(
+                        "-XepAllSuggestionsAsWarnings",
+                    )
+                checks =
+                    mapOf(
+                        "ReferenceEquality" to CheckSeverity.ERROR,
+                        "UnnecessaryParentheses" to CheckSeverity.OFF,
+                        "MisformattedTestData" to CheckSeverity.OFF,
+                    )
+            }
+        }
+
+        checkerFramework {
+            checkers =
+                listOf(
+                    "org.checkerframework.checker.nullness.NullnessChecker",
+                )
+            extraJavacArgs =
+                listOf(
+                    "-Astubs=$rootDir/typings",
+                    "-AskipFiles=/build/generated/",
+                    "-AstubNoWarnIfNotFound",
+                    "-AwarnUnneededSuppressions",
+                )
+            excludeTests = true
+        }
     }
-}
 
-checkerFramework {
-    checkers =
-        listOf(
-            "org.checkerframework.checker.nullness.NullnessChecker",
-        )
-    extraJavacArgs =
-        listOf(
-            "-Astubs=$rootDir/typings",
-            "-AskipFiles=/build/generated/",
-            "-AstubNoWarnIfNotFound",
-            "-AwarnUnneededSuppressions",
-        )
-    excludeTests = true
+    tasks.withType<Test>().all {
+        testLogging {
+            events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+
+            exceptionFormat = TestExceptionFormat.FULL
+        }
+    }
+
+    tasks.withType<JacocoReport>().all { reports { xml.required = true } }
 }
 
 spotless {
     java {
         target("**/*.java")
-        targetExclude("build/")
+        targetExclude("**/build/")
         importOrderFile("$rootDir/configs/eclipse-organize-imports.importorder")
         removeUnusedImports()
         eclipse().configFile("$rootDir/configs/eclipse-code-formatter.xml")
@@ -114,53 +101,17 @@ spotless {
     }
     yaml {
         target("**/*.yaml", "**/*.yml")
-        targetExclude(".venv/")
+        targetExclude("**/.venv/")
         indentWithSpaces(2)
         trimTrailingWhitespace()
         endWithNewline()
     }
     json {
         target("**/*.json")
-        targetExclude(".venv/")
+        targetExclude("**/.venv/")
         gson().indentWithSpaces(2)
         trimTrailingWhitespace()
         endWithNewline()
-    }
-}
-
-mavenPublishing {
-    configure(JavaLibrary(javadocJar = JavadocJar.Empty(), sourcesJar = true))
-
-    pom {
-        url = "https://github.com/iyanging/error-prone-asis"
-        description = "Error Prone extended checks keep code as-is to reflect your intentions"
-        licenses {
-            license {
-                name = "Mulan Permissive Software License v2"
-                url = "https://license.coscl.org.cn/MulanPSL2"
-            }
-        }
-        developers {
-            developer {
-                id = "iyanging"
-                name = "iyanging"
-                url = "https://github.com/iyanging/"
-            }
-        }
-        scm { url = "https://github.com/iyanging/error-prone-asis" }
-    }
-
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
-
-    signAllPublications()
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-
-    reports {
-        xml.required = true
-        csv.required = false
     }
 }
 
