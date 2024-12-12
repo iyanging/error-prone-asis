@@ -5,6 +5,7 @@ repo_name: iyanging/error-prone-asis
 repo_url: https://github.com/iyanging/error-prone-asis
 copyright: |
   &copy <a href="https://github.com/iyanging" target="_blank" rel="noopener">iyanging</a> &bull; <a href="https://github.com/iyanging/error-prone-asis/blob/master/LICENSE.txt"> project license </a>
+docs_dir: generated-docs
 theme:
   name: material
   features:

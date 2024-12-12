@@ -43,10 +43,7 @@ subprojects {
         tasks.withType<JavaCompile>().all {
             options.errorprone {
                 disableWarningsInGeneratedCode = true
-                errorproneArgs =
-                    listOf(
-                        "-XepAllSuggestionsAsWarnings",
-                    )
+                errorproneArgs = listOf("-XepAllSuggestionsAsWarnings")
                 checks =
                     mapOf(
                         "ReferenceEquality" to CheckSeverity.ERROR,
@@ -57,10 +54,7 @@ subprojects {
         }
 
         checkerFramework {
-            checkers =
-                listOf(
-                    "org.checkerframework.checker.nullness.NullnessChecker",
-                )
+            checkers = listOf("org.checkerframework.checker.nullness.NullnessChecker")
             extraJavacArgs =
                 listOf(
                     "-Astubs=$rootDir/typings",
@@ -82,6 +76,27 @@ subprojects {
 
     tasks.withType<JacocoReport>().all { reports { xml.required = true } }
 }
+
+val asis =
+    project("asis") {
+        plugins.withType<JavaPlugin> {
+            dependencies { annotationProcessor(project(":asis-docgen")) }
+        }
+    }
+
+val generateDocs =
+    tasks.register<Copy>("generateDocs") {
+        group = "documentation"
+
+        dependsOn(asis.tasks.compileJava)
+
+        val asisGeneratedSource =
+            asis.tasks.compileJava.get().options.generatedSourceOutputDirectory.get()
+
+        delete("$rootDir/docs/generated")
+        from("${asisGeneratedSource}/docs", "$rootDir/docs")
+        into("$rootDir/generated-docs")
+    }
 
 spotless {
     java {

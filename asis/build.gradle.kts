@@ -8,17 +8,6 @@ plugins {
     alias(libs.plugins.mavenPublish)
 }
 
-val sourceSetDocs =
-    sourceSets.create("docs") {
-        java.srcDirs(sourceSets.main.get().java.srcDirs)
-        annotationProcessorPath += sourceSets.main.get().annotationProcessorPath
-        compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath
-        runtimeClasspath += sourceSets.main.get().runtimeClasspath
-    }
-
-val docsAnnotationProcessor =
-    configurations.named(sourceSetDocs.annotationProcessorConfigurationName).get()
-
 dependencies {
     api(libs.jspecify)
 
@@ -30,8 +19,6 @@ dependencies {
     testImplementation(libs.errorProneTestHelpers)
 
     testRuntimeOnly(libs.jakartaPersistenceApi)
-
-    docsAnnotationProcessor(project(":asis-docgen"))
 }
 
 val javacExports =
@@ -47,7 +34,6 @@ val javacExports =
         "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
         "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
         "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
     )
 
 tasks.withType<JavaCompile>().all { options.compilerArgs.addAll(javacExports) }

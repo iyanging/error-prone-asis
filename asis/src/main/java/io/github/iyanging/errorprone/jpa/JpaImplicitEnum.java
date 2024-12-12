@@ -17,7 +17,6 @@ import io.github.iyanging.errorprone.util.JpaUtil;
 @BugPattern(
     summary = "A persistable enum field should be annotated with @Enumerated",
     severity = BugPattern.SeverityLevel.WARNING,
-    linkType = BugPattern.LinkType.NONE,
     tags = { BugPattern.StandardTags.FRAGILE_CODE, BugPattern.StandardTags.LIKELY_ERROR }
 )
 public class JpaImplicitEnum extends BugChecker implements BugChecker.ClassTreeMatcher {

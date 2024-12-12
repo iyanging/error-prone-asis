@@ -21,7 +21,6 @@ import io.github.iyanging.errorprone.util.JpaUtil;
 @BugPattern(
     summary = "A decimal column should specify precision and scale",
     severity = BugPattern.SeverityLevel.WARNING,
-    linkType = BugPattern.LinkType.NONE,
     tags = { BugPattern.StandardTags.FRAGILE_CODE, BugPattern.StandardTags.LIKELY_ERROR }
 )
 public class JpaDefaultDecimal extends BugChecker implements BugChecker.ClassTreeMatcher {
