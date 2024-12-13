@@ -8,10 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -20,6 +17,7 @@ import javax.tools.StandardLocation;
 import com.google.auto.service.AutoService;
 import com.google.errorprone.BugPattern;
 import com.sun.source.util.Trees;
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
@@ -35,6 +33,7 @@ import org.jspecify.annotations.Nullable;
 )
 @AutoService(Processor.class)
 public class DocGenProcessor extends AbstractProcessor {
+    private Messager messager;
     private Trees trees;
     private TreeMaker treeMaker;
     private Names names;
@@ -49,7 +48,7 @@ public class DocGenProcessor extends AbstractProcessor {
         }
 
         final var annoInvocation = JavacUtil
-            .getAnnotationInvocation(trees, checker.element(), BugPattern.class)
+            .getAnnotationInvocation(trees, checker.clazzSymbol(), BugPattern.class)
             .getFirst();
 
         JavacUtil.putAnnotationInvocationArguments(
@@ -96,8 +95,11 @@ public class DocGenProcessor extends AbstractProcessor {
         Set<? extends TypeElement> annotations,
         RoundEnvironment roundEnv
     ) {
-        for (final var clazz : roundEnv.getElementsAnnotatedWith(BugPattern.class)) {
-            final var checker = inspect(clazz);
+        for (final var element : roundEnv.getElementsAnnotatedWith(BugPattern.class)) {
+            final var checker = inspectChecker(element);
+            if (checker == null) {
+                continue;
+            }
 
             if (handledCheckers.contains(checker)) {
                 continue;
@@ -117,14 +119,22 @@ public class DocGenProcessor extends AbstractProcessor {
         return false;
     }
 
-    private static BugPatternChecker inspect(Element element) {
+    private @Nullable BugPatternChecker inspectChecker(Element element) {
         final var anno = element.getAnnotation(BugPattern.class);
+        if (anno == null) {
+            return null;
+        }
+
+        if (! (element instanceof Symbol.ClassSymbol clazz)) {
+            messager.printError("@BugPattern can only be annotated to class", element);
+            return null;
+        }
 
         return new BugPatternChecker(
             element.toString(),
             element.getSimpleName().toString(),
             anno,
-            element
+            clazz
         );
     }
 
@@ -134,6 +144,7 @@ public class DocGenProcessor extends AbstractProcessor {
 
         final var javacProcessingEnv = (JavacProcessingEnvironment) processingEnv;
 
+        this.messager = javacProcessingEnv.getMessager();
         this.trees = Trees.instance(javacProcessingEnv);
         this.treeMaker = TreeMaker.instance(javacProcessingEnv.getContext());
         this.names = Names.instance(javacProcessingEnv.getContext());
@@ -151,7 +162,7 @@ public class DocGenProcessor extends AbstractProcessor {
         String clazzName,
         String clazzSimpleName,
         BugPattern annoInstance,
-        Element element
+        Symbol.ClassSymbol clazzSymbol
     ) {
         @Override
         public int hashCode() {
@@ -171,7 +182,9 @@ public class DocGenProcessor extends AbstractProcessor {
         }
 
         public String category() {
-            return element.getEnclosingElement().getSimpleName().toString();
+            return Objects.requireNonNull(clazzSymbol.getEnclosingElement())
+                .getSimpleName()
+                .toString();
         }
     }
 
