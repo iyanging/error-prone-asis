@@ -78,9 +78,9 @@ subprojects {
 }
 
 val asis =
-    project("asis") {
+    project("error-prone-asis") {
         plugins.withType<JavaPlugin> {
-            dependencies { annotationProcessor(project(":asis-docgen")) }
+            dependencies { annotationProcessor(project(":error-prone-asis-docgen")) }
         }
     }
 

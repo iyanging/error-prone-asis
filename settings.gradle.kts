@@ -1,5 +1,5 @@
 rootProject.name = "error-prone-asis"
 
-include("asis")
+include("error-prone-asis")
 
-include("asis-docgen")
+include("error-prone-asis-docgen")
