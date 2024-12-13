@@ -8,6 +8,7 @@ plugins {
     java
     alias(libs.plugins.errorProne)
     alias(libs.plugins.nullaway)
+    alias(libs.plugins.licenser)
     alias(libs.plugins.spotless)
     `jacoco-report-aggregation`
 }
@@ -30,6 +31,7 @@ group = "io.github.iyanging"
 subprojects {
     apply(plugin = rootProject.libs.plugins.errorProne.get().pluginId)
     apply(plugin = rootProject.libs.plugins.nullaway.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.licenser.get().pluginId)
 
     group = rootProject.group
 
@@ -69,6 +71,10 @@ subprojects {
             exceptionFormat = TestExceptionFormat.FULL
         }
     }
+
+    license { rule(file("$rootDir/configs/license-template.txt")) }
+
+    plugins.withType<BasePlugin> { tasks.check { dependsOn(tasks.checkLicenses) } }
 
     tasks.withType<JacocoReport>().all { reports { xml.required = true } }
 }

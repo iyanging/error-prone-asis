@@ -3,6 +3,7 @@ errorPronePlugin = "4.1.0"
 nullawayPlugin = "2.1.0"
 spotlessPlugin = "7.0.0.BETA4"
 mavenPublishPlugin = "0.30.0"
+licenserPlugin = "2.1.0"
 
 jspecify = "1.0.0"
 errorProne = "2.36.0"
@@ -16,6 +17,7 @@ errorProne = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }
 nullaway = { id = "net.ltgt.nullaway", version.ref = "nullawayPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublishPlugin" }
+licenser = { id = "dev.yumi.gradle.licenser", version.ref = "licenserPlugin" }
 
 [libraries]
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
