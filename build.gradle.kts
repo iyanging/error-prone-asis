@@ -1,11 +1,13 @@
 import net.ltgt.gradle.errorprone.CheckSeverity
 import net.ltgt.gradle.errorprone.errorprone
+import net.ltgt.gradle.nullaway.nullaway
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     java
     alias(libs.plugins.errorProne)
+    alias(libs.plugins.nullaway)
     alias(libs.plugins.spotless)
     `jacoco-report-aggregation`
 }
@@ -14,6 +16,7 @@ repositories { mavenCentral() }
 
 dependencies {
     errorprone(libs.errorProneCore)
+    errorprone(libs.nullaway)
 
     subprojects.forEach { sp ->
         if (sp.plugins.hasPlugin(JacocoPlugin::class)) {
@@ -22,17 +25,23 @@ dependencies {
     }
 }
 
+group = "io.github.iyanging"
+
 subprojects {
     apply(plugin = rootProject.libs.plugins.errorProne.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.nullaway.get().pluginId)
 
-    group = "io.github.iyanging"
+    group = rootProject.group
 
     repositories { mavenCentral() }
 
     plugins.withType<JavaPlugin> {
         java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
-        dependencies { errorprone(libs.errorProneCore) }
+        dependencies {
+            errorprone(libs.errorProneCore)
+            errorprone(libs.nullaway)
+        }
 
         tasks.withType<JavaCompile>().all {
             options.errorprone {
@@ -44,6 +53,11 @@ subprojects {
                         "UnnecessaryParentheses" to CheckSeverity.OFF,
                         "MisformattedTestData" to CheckSeverity.OFF,
                     )
+
+                nullaway {
+                    error()
+                    annotatedPackages.add(project.group.toString())
+                }
             }
         }
     }

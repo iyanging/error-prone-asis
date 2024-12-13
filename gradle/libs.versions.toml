@@ -1,16 +1,19 @@
 [versions]
 errorPronePlugin = "4.1.0"
+nullawayPlugin = "2.1.0"
 spotlessPlugin = "7.0.0.BETA4"
 mavenPublishPlugin = "0.30.0"
 
 jspecify = "1.0.0"
 errorProne = "2.36.0"
+nullaway = "0.12.1"
 autoService = "1.1.1"
 
 jakartaPersistenceApi = "3.2.0"
 
 [plugins]
 errorProne = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }
+nullaway = { id = "net.ltgt.nullaway", version.ref = "nullawayPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublishPlugin" }
 
@@ -19,6 +22,7 @@ jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 errorProneCore = { module = "com.google.errorprone:error_prone_core", version.ref = "errorProne" }
 errorProneCheckApi = { module = "com.google.errorprone:error_prone_check_api", version.ref = "errorProne" }
 errorProneTestHelpers = { module = "com.google.errorprone:error_prone_test_helpers", version.ref = "errorProne" }
+nullaway = { module = "com.uber.nullaway:nullaway", version.ref = "nullaway" }
 autoServiceAnnotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoService" }
 autoService = { module = "com.google.auto.service:auto-service", version.ref = "autoService" }
 
