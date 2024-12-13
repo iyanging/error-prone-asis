@@ -6,7 +6,6 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
     java
     alias(libs.plugins.errorProne)
-    alias(libs.plugins.checkerFramework)
     alias(libs.plugins.spotless)
     `jacoco-report-aggregation`
 }
@@ -15,7 +14,6 @@ repositories { mavenCentral() }
 
 dependencies {
     errorprone(libs.errorProneCore)
-    checkerFramework(libs.checkerFramework)
 
     subprojects.forEach { sp ->
         if (sp.plugins.hasPlugin(JacocoPlugin::class)) {
@@ -26,7 +24,6 @@ dependencies {
 
 subprojects {
     apply(plugin = rootProject.libs.plugins.errorProne.get().pluginId)
-    apply(plugin = rootProject.libs.plugins.checkerFramework.get().pluginId)
 
     group = "io.github.iyanging"
 
@@ -35,10 +32,7 @@ subprojects {
     plugins.withType<JavaPlugin> {
         java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
-        dependencies {
-            errorprone(libs.errorProneCore)
-            checkerFramework(libs.checkerFramework)
-        }
+        dependencies { errorprone(libs.errorProneCore) }
 
         tasks.withType<JavaCompile>().all {
             options.errorprone {
@@ -51,18 +45,6 @@ subprojects {
                         "MisformattedTestData" to CheckSeverity.OFF,
                     )
             }
-        }
-
-        checkerFramework {
-            checkers = listOf("org.checkerframework.checker.nullness.NullnessChecker")
-            extraJavacArgs =
-                listOf(
-                    "-Astubs=$rootDir/typings",
-                    "-AskipFiles=/build/generated/",
-                    "-AstubNoWarnIfNotFound",
-                    "-AwarnUnneededSuppressions",
-                )
-            excludeTests = true
         }
     }
 
