@@ -7,7 +7,7 @@ licenserPlugin = "2.1.0"
 
 jspecify = "1.0.0"
 errorProne = "2.36.0"
-nullaway = "0.12.1"
+nullaway = "0.12.2"
 autoService = "1.1.1"
 
 jakartaPersistenceApi = "3.2.0"
