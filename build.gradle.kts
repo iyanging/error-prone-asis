@@ -5,32 +5,19 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    java
-    alias(libs.plugins.errorProne)
-    alias(libs.plugins.nullaway)
-    alias(libs.plugins.licenser)
-    alias(libs.plugins.spotless)
+    base
     `jacoco-report-aggregation`
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.licenser)
+    alias(libs.plugins.errorProne) apply false
+    alias(libs.plugins.nullaway) apply false
 }
 
 repositories { mavenCentral() }
 
-dependencies {
-    errorprone(libs.errorProneCore)
-    errorprone(libs.nullaway)
-
-    subprojects.forEach { sp ->
-        if (sp.plugins.hasPlugin(JacocoPlugin::class)) {
-            jacocoAggregation(sp)
-        }
-    }
-}
-
 group = "io.github.iyanging"
 
 subprojects {
-    apply(plugin = rootProject.libs.plugins.errorProne.get().pluginId)
-    apply(plugin = rootProject.libs.plugins.nullaway.get().pluginId)
     apply(plugin = rootProject.libs.plugins.licenser.get().pluginId)
 
     group = rootProject.group
@@ -38,14 +25,21 @@ subprojects {
     repositories { mavenCentral() }
 
     plugins.withType<JavaPlugin> {
-        java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+        apply(plugin = rootProject.libs.plugins.errorProne.get().pluginId)
+        apply(plugin = rootProject.libs.plugins.nullaway.get().pluginId)
+
+        extensions.getByType<JavaPluginExtension>().apply {
+            toolchain { languageVersion = JavaLanguageVersion.of(21) }
+        }
 
         dependencies {
+            val errorprone = configurations["errorprone"]
+
             errorprone(libs.errorProneCore)
             errorprone(libs.nullaway)
         }
 
-        tasks.withType<JavaCompile>().all {
+        tasks.withType<JavaCompile> {
             options.errorprone {
                 disableWarningsInGeneratedCode = true
                 errorproneArgs = listOf("-XepAllSuggestionsAsWarnings")
@@ -62,6 +56,11 @@ subprojects {
                 }
             }
         }
+
+        tasks.withType<JacocoReport>().forEach {
+            it.reports { xml.required = true }
+            tasks.check { dependsOn(it) }
+        }
     }
 
     tasks.withType<Test>().all {
@@ -72,17 +71,21 @@ subprojects {
         }
     }
 
+    plugins.withType<JacocoPlugin> { rootProject.dependencies { jacocoAggregation(project) } }
+
     license { rule(file("$rootDir/configs/license-template.txt")) }
 
     plugins.withType<BasePlugin> { tasks.check { dependsOn(tasks.checkLicenses) } }
-
-    tasks.withType<JacocoReport>().all { reports { xml.required = true } }
 }
 
 val asis =
     project("error-prone-asis") {
         plugins.withType<JavaPlugin> {
-            dependencies { annotationProcessor(project(":error-prone-asis-docgen")) }
+            dependencies {
+                val annotationProcessor = configurations["annotationProcessor"]
+
+                annotationProcessor(project(":error-prone-asis-docgen"))
+            }
         }
     }
 
@@ -90,10 +93,12 @@ val generateDocs =
     tasks.register<Copy>("generateDocs") {
         group = "documentation"
 
-        dependsOn(asis.tasks.compileJava)
+        dependsOn(asis.tasks["compileJava"])
 
         val asisGeneratedSource =
-            asis.tasks.compileJava.get().options.generatedSourceOutputDirectory.get()
+            asis.tasks.named<JavaCompile>("compileJava") {
+                options.generatedSourceOutputDirectory.get()
+            }
 
         delete("$rootDir/docs/generated")
         from("${asisGeneratedSource}/docs", "$rootDir/docs")
@@ -132,4 +137,12 @@ spotless {
     }
 }
 
-tasks.check { dependsOn(tasks.jacocoTestReport) }
+reporting {
+    reports {
+        @Suppress("UnstableApiUsage")
+        val testCodeCoverageReport by
+            creating(JacocoCoverageReport::class) { testType = TestSuiteType.UNIT_TEST }
+    }
+}
+
+tasks.check { dependsOn(tasks["testCodeCoverageReport"]) }

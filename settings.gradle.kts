@@ -1,4 +1,4 @@
-rootProject.name = "error-prone-asis"
+rootProject.name = "error-prone-asis-project"
 
 include("error-prone-asis")
 
