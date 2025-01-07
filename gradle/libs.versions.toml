@@ -1,7 +1,7 @@
 [versions]
 errorPronePlugin = "4.1.0"
 nullawayPlugin = "2.1.0"
-spotlessPlugin = "7.0.0.BETA4"
+spotlessPlugin = "7.0.0"
 mavenPublishPlugin = "0.30.0"
 licenserPlugin = "2.1.0"
 
