@@ -3,7 +3,7 @@ errorPronePlugin = "4.1.0"
 nullawayPlugin = "2.2.0"
 spotlessPlugin = "7.0.2"
 mavenPublishPlugin = "0.30.0"
-licenserPlugin = "2.1.0"
+licenserPlugin = "2.1.1"
 
 jspecify = "1.0.0"
 errorProne = "2.36.0"
