@@ -1,5 +1,5 @@
 [versions]
-errorPronePlugin = "4.1.0"
+errorPronePlugin = "4.2.0"
 nullawayPlugin = "2.2.0"
 spotlessPlugin = "7.0.2"
 mavenPublishPlugin = "0.31.0"
