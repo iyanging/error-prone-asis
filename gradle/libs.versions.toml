@@ -6,7 +6,7 @@ mavenPublishPlugin = "0.32.0"
 licenserPlugin = "2.1.1"
 
 jspecify = "1.0.0"
-errorProne = "2.37.0"
+errorProne = "2.38.0"
 nullaway = "0.12.7"
 autoService = "1.1.1"
 
