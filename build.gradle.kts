@@ -139,7 +139,7 @@ spotless {
 reporting {
     reports {
         @Suppress("UnstableApiUsage")
-        creating(JacocoCoverageReport::class) { testSuiteName = "test" }
+        create<JacocoCoverageReport>("testCodeCoverageReport") { testSuiteName = "test" }
     }
 }
 
