@@ -89,21 +89,20 @@ val asis =
         }
     }
 
-val generateDocs =
-    tasks.register<Copy>("generateDocs") {
-        group = "documentation"
+tasks.register<Copy>("generateDocs") {
+    group = "documentation"
 
-        dependsOn(asis.tasks["compileJava"])
+    dependsOn(asis.tasks["compileJava"])
 
-        val asisGeneratedSource =
-            asis.tasks.named<JavaCompile>("compileJava") {
-                options.generatedSourceOutputDirectory.get()
-            }
+    val asisGeneratedSource =
+        asis.tasks.named<JavaCompile>("compileJava") {
+            options.generatedSourceOutputDirectory.get()
+        }
 
-        delete("$rootDir/docs/generated")
-        from("${asisGeneratedSource}/docs", "$rootDir/docs")
-        into("$rootDir/generated-docs")
-    }
+    delete("$rootDir/docs/generated")
+    from("${asisGeneratedSource}/docs", "$rootDir/docs")
+    into("$rootDir/generated-docs")
+}
 
 spotless {
     java {
@@ -124,7 +123,7 @@ spotless {
     yaml {
         target("**/*.yaml", "**/*.yml")
         targetExclude("**/.venv/")
-        indentWithSpaces(2)
+        leadingTabsToSpaces(2)
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -140,8 +139,7 @@ spotless {
 reporting {
     reports {
         @Suppress("UnstableApiUsage")
-        val testCodeCoverageReport by
-            creating(JacocoCoverageReport::class) { testType = TestSuiteType.UNIT_TEST }
+        creating(JacocoCoverageReport::class) { testSuiteName = "test" }
     }
 }
 

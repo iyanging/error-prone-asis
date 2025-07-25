@@ -2,7 +2,6 @@
 errorPronePlugin = "4.3.0"
 nullawayPlugin = "2.2.0"
 spotlessPlugin = "7.2.1"
-mavenPublishPlugin = "0.33.0"
 licenserPlugin = "2.1.1"
 
 jspecify = "1.0.0"
@@ -16,7 +15,6 @@ jakartaPersistenceApi = "3.2.0"
 errorProne = { id = "net.ltgt.errorprone", version.ref = "errorPronePlugin" }
 nullaway = { id = "net.ltgt.nullaway", version.ref = "nullawayPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
-mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublishPlugin" }
 licenser = { id = "dev.yumi.gradle.licenser", version.ref = "licenserPlugin" }
 
 [libraries]

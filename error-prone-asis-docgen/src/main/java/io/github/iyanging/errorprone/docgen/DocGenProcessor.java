@@ -190,13 +190,13 @@ public class DocGenProcessor extends AbstractProcessor {
                 && Objects.equals(this.clazzName, that.clazzName);
         }
 
-        public String name() {
+        String name() {
             return annoInstance.name().isEmpty()
                 ? clazzSimpleName
                 : annoInstance.name();
         }
 
-        public String category() {
+        String category() {
             return Objects.requireNonNull(clazzSymbol.getEnclosingElement())
                 .getSimpleName()
                 .toString();
@@ -204,7 +204,7 @@ public class DocGenProcessor extends AbstractProcessor {
     }
 
     private static class JavacUtil {
-        public static List<JCTree.JCAnnotation> getAnnotationInvocation(
+        static List<JCTree.JCAnnotation> getAnnotationInvocation(
             Trees trees,
             Element element,
             Class<? extends Annotation> annotationClazz
@@ -222,7 +222,7 @@ public class DocGenProcessor extends AbstractProcessor {
                 .toList();
         }
 
-        public static void putAnnotationInvocationArguments(
+        static void putAnnotationInvocationArguments(
             JCTree.JCAnnotation annoInvocation,
             JCTree.JCAssign... arguments
         ) {
