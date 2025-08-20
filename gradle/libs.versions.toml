@@ -1,6 +1,6 @@
 [versions]
 errorPronePlugin = "4.3.0"
-nullawayPlugin = "2.2.0"
+nullawayPlugin = "2.3.0"
 spotlessPlugin = "7.2.1"
 licenserPlugin = "2.1.1"
 
