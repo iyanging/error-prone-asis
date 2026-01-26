@@ -2,7 +2,7 @@
 errorPronePlugin = "4.4.0"
 nullawayPlugin = "2.4.0"
 spotlessPlugin = "8.2.0"
-licenserPlugin = "2.2.1"
+licenserPlugin = "2.2.2"
 
 jspecify = "1.0.0"
 errorProne = "2.46.0"
