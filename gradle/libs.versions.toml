@@ -1,7 +1,7 @@
 [versions]
 errorPronePlugin = "5.1.0"
 nullawayPlugin = "2.4.0"
-spotlessPlugin = "8.2.1"
+spotlessPlugin = "8.3.0"
 licenserPlugin = "2.2.2"
 
 jspecify = "1.0.0"
